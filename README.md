@@ -10,7 +10,7 @@ El desarrollo de este proyecto tiene como foco la utilidad y el dinamismo que el
 
 La solución sugerida para este proyecto incluye un menú de 5 o 6 converiones predeterminadas por el desarrollador y la ejecución de la conversión seleccionada por el usuario mediante condicionales como el *switch statement*.
 
-Si bien esto podría ser util y funcional para el usurio, también limita bastante el uso que este puede darle al conversor en caso de que se requiera una conversión no incluida previamente en el menú.
+Si bien esto podría ser util y funcional para el usurio, también limita bastante el uso que este puede darle al conversor en caso de que se requiera una conversión no incluida previamente en el menú ya que actualmente existe al rededor de 230 divisas oficiales reconocidas.
 
 Para solucionar esto se optó por una alternativa un tanto más creativa que se expondrá a continuación.
 
@@ -74,6 +74,54 @@ System.out.println("Nueva conversión disponible.");
 
 Existe una sola ramificación para cuando el usuario elija una de las opciones de conversión disponibles ya que se ejecutará el mismo código para todas ellas.
 
-```java
+Para referir en esta parte del código las divisas seleccionadas el programa toma posiciones determinadas del String de la opción indicada mediante la selección del usuario. Ya que el formato de las opciones es siempre el mismo, basta con dejar especificadas dichas posiciones.
 
+De esta manera no importa cuantas o cuales opciones añada el usuario, el código seguirá siendo útil y efectivo para las más de 50000 conversiones posibles.
+
+```java
+} else {
+
+        String monedaUno = (conversionesDisponibles.get(seleccionUsuario - 1).substring(13, 16));
+        String monedaDos = (conversionesDisponibles.get(seleccionUsuario - 1).substring(19, 22));
+
+        String nombreMonedaUno = Currency.getInstance(monedaUno).getDisplayName();
+        String nombreMonedaDos = Currency.getInstance(monedaDos).getDisplayName();
+
+        System.out.println("¿Qué cantidad de " + nombreMonedaUno + " quieres convertir?");
+
+        var factorConversor = entrada.nextDouble();
+```
+
+Una vez obtenidos los códigos implicados en la conversión se añadin a la url y se procede con el consumo API y el manejo de JSON.
+
+```java
+//SOLICITUD A API
+
+String direccion = "https://v6.exchangerate-api.com/v6/357f2b9ea22f7450728071a6/pair/"
+                            + monedaUno + "/" + monedaDos;
+
+HttpClient client = HttpClient.newHttpClient();
+HttpRequest request = HttpRequest.newBuilder()
+        .uri(URI.create(direccion))
+        .build();
+HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+//INTERPRETACION DE RESPUESTA DE API
+
+Gson gson = new GsonBuilder().create();
+String objetoJson = response.body();
+DivisasExGen misDivisasExGen = gson.fromJson(objetoJson, DivisasExGen.class);
+```
+
+Por ultimo, diferentes clases, records y métodos se encargan de la interpretación del JSON y el cálculo solicitado por el usuario.
+```java
+DivisaDestino miDivisaDestino = new DivisaDestino();
+miDivisaDestino.setNombre(nombreMonedaDos);
+miDivisaDestino.setValorRelativo(misDivisasExGen.conversion_rate());
+
+CalculadoraDeDivisas calculadora = new CalculadoraDeDivisas();
+calculadora.convierte(miDivisaDestino, factorConversor);
+ System.out.println(factorConversor + " de " + nombreMonedaUno
+        + " equivalen a " + calculadora.getDivisaConvertida() + " de "
+        + miDivisaDestino.getNombre() + "\n");
 ```
