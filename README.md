@@ -141,3 +141,5 @@ calculadora.convierte(miDivisaDestino, factorConversor);
         + " equivalen a " + calculadora.getDivisaConvertida() + " de "
         + miDivisaDestino.getNombre() + "\n");
 ```
+
+De esta manera obtenemos un conversor completamente funcional, útil y flexible con todos los posibles requerimientos.
