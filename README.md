@@ -2,6 +2,22 @@
 
 Proyecto desarrollado para realizar la conversión de valores de las divisas seleccionadas mediante el consumo de API y el manejo de JSON.
 
+## Herramientas, recursos y tecnologías requeridas
+
+***API Exchange Rate**
+
+El consumo de esta API es completamente gratuido pero es necesario registrarse y obtener una KEY personalizada para su uso.
+
+La documentación de la API proporciona una URL para consulta por pares de divisas:
+
+https://v6.exchangerate-api.com/v6/API-KEY/pair/MONEDA_UNO/MONEDA_DOS
+
+***JDK 17**
+
+***Jackson Project Home 2.17.2**
+
+***Las librerias correspondientes de JAVA**
+
 ## Desarrollo y lógica del código
 
 El desarrollo de este proyecto tiene como foco la utilidad y el dinamismo que el usuario pueda obtener del mismo.
